@@ -27,7 +27,7 @@ urlpatterns = [
         serve,
         {
             "path": "favicon.ico",
-            "document_root": os.path.join(settings.BASE_DIR, "baasahab", "res"),
+            "document_root": os.path.join(settings.BASE_DIR, "baaisahab", "res"),
         },
     ),
 
