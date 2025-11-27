@@ -142,3 +142,8 @@ vite.config.ts.timestamp-*
 *.txt
 forUpload/
 uploads
+/generated/prisma
+
+/generated/prisma
+
+/generated/prisma
