@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.db import connection
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 def health_view(request):
@@ -15,6 +15,6 @@ def health_view(request):
             "db": {
                 "reachable": row == (1,),
             },
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": int(datetime.now(timezone.utc).timestamp() * 1000)
         }
     )
