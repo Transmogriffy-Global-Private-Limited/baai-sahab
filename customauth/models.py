@@ -15,3 +15,28 @@ class User(models.Model):
 
     def check_password(self, raw_password):
         return check_password(raw_password, self.password)
+
+class UserSession(models.Model):
+    """
+    Per-user session record.
+
+    - session_id: primary key (UUID)
+    - version_id: random UUID used inside the token
+    - user: FK to User
+    """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)  # session id
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sessions")
+    version_id = models.UUIDField(default=uuid.uuid4, editable=False)  # random per session version
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def rotate_version(self):
+        """
+        Invalidate all existing tokens for this session by changing version_id.
+        """
+        self.version_id = uuid.uuid4()
+        self.save(update_fields=["version_id", "updated_at"])
+
+    def __str__(self):
+        return f"Session({self.id}) for {self.user.phone_number}"
