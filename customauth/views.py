@@ -31,6 +31,7 @@ def _user_to_dict(user: User):
         "id": str(user.id),
         "name": user.name,
         "phone_number": user.phone_number,
+        "user_type": user.user_type,
     }
 
 
@@ -87,6 +88,15 @@ def signup_view(request):
     name = (data.get("name") or "").strip()
     phone_number = (data.get("phone_number") or "").strip()
     password = data.get("password") or ""
+    user_type = (data.get("user_type") or "user").strip().lower()
+
+    # enforce allowed values
+    allowed_types = {"admin", "user", "helper"}
+    if user_type not in allowed_types:
+        return JsonResponse(
+            {"detail": f"user_type must be one of {sorted(allowed_types)}"},
+            status=400,
+        )
 
     if not name or not phone_number or not password:
         return JsonResponse(
@@ -98,6 +108,7 @@ def signup_view(request):
         user = User(
             name=name,
             phone_number=phone_number,
+            user_type=user_type,
             password="",  # will be replaced by set_password()
         )
         user.save()

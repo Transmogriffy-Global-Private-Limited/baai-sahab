@@ -85,6 +85,7 @@ def create_encrypted_access_token_for_session(session: UserSession) -> str:
     payload = {
         "user_id": str(user.id),
         "phone_number": user.phone_number,
+        "user_type": user.user_type,
         "session_id": str(session.id),
         "session_version_id": str(session.version_id),
         "type": "access",
