@@ -33,5 +33,7 @@ urlpatterns = [
 
     path("admin/", admin.site.urls),
     path("", include("health.urls")),
-    path("", include("customauth.urls")),
+    path("auth/", include("customauth.urls")),
+    path("profile/", include("userprofile.urls")),
+
 ]
