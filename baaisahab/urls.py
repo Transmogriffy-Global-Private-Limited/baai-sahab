@@ -33,4 +33,5 @@ urlpatterns = [
 
     path("admin/", admin.site.urls),
     path("", include("health.urls")),
+    path("", include("customauth.urls")),
 ]
