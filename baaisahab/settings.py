@@ -157,9 +157,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 import datetime
 
-JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", SECRET_KEY)
-JWT_ALGORITHM = "HS256"
-JWT_ACCESS_TOKEN_LIFETIME = datetime.timedelta(minutes=30)
-
-# Must be a 32-byte urlsafe base64 key (Fernet)
+JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
+JWT_ACCESS_TOKEN_LIFETIME = datetime.timedelta(
+    minutes=int(os.getenv("JWT_ACCESS_TOKEN_LIFETIME_MIN", "1440"))
+)
 JWT_ENCRYPTION_KEY = os.getenv("JWT_ENCRYPTION_KEY")
