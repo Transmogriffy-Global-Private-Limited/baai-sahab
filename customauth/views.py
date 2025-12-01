@@ -91,7 +91,7 @@ def signup_view(request):
     user_type = (data.get("user_type") or "user").strip().lower()
 
     # enforce allowed values
-    allowed_types = {"admin", "user", "helper"}
+    allowed_types = {"user", "helper"}
     if user_type not in allowed_types:
         return JsonResponse(
             {"detail": f"user_type must be one of {sorted(allowed_types)}"},
