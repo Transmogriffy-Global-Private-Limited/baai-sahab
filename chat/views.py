@@ -345,3 +345,73 @@ def mark_seen_view(request, message_id: int):
     broadcast_message(message, event_type="seen")
 
     return JsonResponse(_message_to_dict(message), status=200)
+
+@csrf_exempt
+def get_secure_file_view(request):
+    """
+    GET /chat/secure-file/?path=/uploads/messageattachments/123-1.png
+
+    - 'path' is exactly what is stored in message.attachments
+      (e.g. '/uploads/messageattachments/123-1.png')
+    - Auth via Bearer token (same as other chat views)
+    - Only sender or recipient of the message can access the file
+    """
+    if request.method != "GET":
+        return JsonResponse({"detail": "Method not allowed"}, status=405)
+
+    user, err = _require_auth(request)
+    if err:
+        return err
+
+    rel_url = request.GET.get("path")
+    if not rel_url:
+        return JsonResponse({"detail": "Missing 'path' parameter"}, status=400)
+
+    # Expect URLs starting with /uploads/
+    uploads_prefix = "/uploads/"
+    if not rel_url.startswith(uploads_prefix):
+        return JsonResponse({"detail": "Invalid path"}, status=400)
+
+    # Strip '/uploads/' to get path relative to uploads dir
+    # '/uploads/messageattachments/123-1.png' -> 'messageattachments/123-1.png'
+    rel_path = rel_url[len(uploads_prefix):]
+
+    # Basic traversal protection
+    if ".." in rel_path or rel_path.startswith("/") or rel_path.startswith("\\"):
+        return JsonResponse({"detail": "Invalid path"}, status=400)
+
+    base_dir = os.path.join(settings.BASE_DIR, "baaisahab", "uploads")
+    abs_path = os.path.join(base_dir, rel_path)
+
+    # Ensure we are still under the uploads root
+    if not abs_path.startswith(base_dir):
+        return JsonResponse({"detail": "Invalid path"}, status=400)
+
+    if not os.path.exists(abs_path):
+        return HttpResponseNotFound("File not found")
+
+    # -------- PERMISSION CHECK: derive message id from filename --------
+    filename = os.path.basename(abs_path)
+    try:
+        # '123-1.png' -> '123'
+        msg_id_str = filename.split("-", 1)[0]
+        msg_id = int(msg_id_str)
+    except Exception:
+        return JsonResponse({"detail": "Invalid file naming format"}, status=400)
+
+    try:
+        message = Message.objects.get(id=msg_id)
+    except Message.DoesNotExist:
+        return JsonResponse({"detail": "Message not found"}, status=404)
+
+    # Only sender or recipient can access
+    if user.id not in (message.from_user_id, message.to_user_id):
+        return JsonResponse({"detail": "Forbidden"}, status=403)
+
+    # -------------------------------------------------------------------
+
+    content_type, _ = mimetypes.guess_type(abs_path)
+    if content_type is None:
+        content_type = "application/octet-stream"
+
+    return FileResponse(open(abs_path, "rb"), content_type=content_type)

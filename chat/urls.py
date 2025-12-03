@@ -7,4 +7,6 @@ urlpatterns = [
     path("messages/<int:message_id>/", views.edit_message_view, name="chat-edit-message"),
     path("messages/<int:message_id>/delete/", views.delete_message_view, name="chat-delete-message"),
     path("messages/<int:message_id>/seen/", views.mark_seen_view, name="chat-mark-seen"),
+    path("secure-file/", views.get_secure_file_view, name="chat-secure-file"),
+]
 ]
