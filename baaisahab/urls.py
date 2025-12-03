@@ -35,5 +35,7 @@ urlpatterns = [
     path("", include("health.urls")),
     path("auth/", include("customauth.urls")),
     path("profile/", include("userprofile.urls")),
-
+    path("matching/", include("matching.urls")),
+    path("media/", include("mediahandling.urls")),
+    path("search/" include("search.urls"))
 ]
