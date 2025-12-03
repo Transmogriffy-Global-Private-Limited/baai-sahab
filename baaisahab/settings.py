@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'userprofile',
     'matching',
     'mediahandling',
-    'search'
+    'search',
+    'filter'
 ]
 
 MIDDLEWARE = [

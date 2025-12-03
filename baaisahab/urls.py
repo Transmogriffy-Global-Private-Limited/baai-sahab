@@ -37,5 +37,6 @@ urlpatterns = [
     path("profile/", include("userprofile.urls")),
     path("matching/", include("matching.urls")),
     path("media/", include("mediahandling.urls")),
-    path("search/" include("search.urls"))
+    path("search/" include("search.urls")),
+    path("filter/" include ("filter.urls"))
 ]
