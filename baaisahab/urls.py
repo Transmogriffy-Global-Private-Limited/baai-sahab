@@ -31,6 +31,15 @@ urlpatterns = [
         },
     ),
 
+    path(
+        "uploads/<path:path>",
+        serve,
+        {
+            "document_root": os.path.join(settings.BASE_DIR, "baaisahab", "uploads"),
+        },
+        name="uploads",
+    ),
+
     path("admin/", admin.site.urls),
     path("", include("health.urls")),
     path("auth/", include("customauth.urls")),

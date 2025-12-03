@@ -50,7 +50,9 @@ INSTALLED_APPS = [
     'matching',
     'mediahandling',
     'search',
-    'filter'
+    'filter',
+    'channels',
+    'chat'
 ]
 
 MIDDLEWARE = [
@@ -92,6 +94,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'baaisahab.wsgi.application'
+
+ASGI_APPLICATION = "baaisahab.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",  # for dev
+    }
+}
+
 
 
 # Database
