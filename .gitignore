@@ -219,3 +219,4 @@ __marimo__/
 uploads/
 forUpload/
 *.txt
+!requirements.txt
