@@ -75,7 +75,8 @@ def signup_view(request):
     {
         "name": "Some Name",
         "phone_number": "9876543210",
-        "password": "plain-text-password"
+        "password": "plain-text-password",
+        "user_type":"user" (or "helper")
     }
     """
     if request.method != "POST":
