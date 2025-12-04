@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     'search',
     'filter',
     'channels',
-    'chat'
+    'chat',
+    'adminstats'
 ]
 
 MIDDLEWARE = [

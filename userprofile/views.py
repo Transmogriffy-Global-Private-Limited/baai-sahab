@@ -184,6 +184,45 @@ def admin_services_view(request):
     return JsonResponse({"detail": "Method not allowed"}, status=405)
 
 
+@csrf_exempt
+def get_services_view(request):
+    """
+    GET /profile/services/
+
+    Returns:
+    [
+      {
+        "id": "<uuid>",
+        "name": "Cooking",
+        "slug": "cooking"
+      },
+      ...
+    ]
+
+    All authenticated users may access.
+    """
+    if request.method != "GET":
+        return JsonResponse({"detail": "Method not allowed"}, status=405)
+
+    user, err = _require_auth(request)  # already exists in your file
+    if err:
+        return err
+
+    services = Service.objects.all().order_by("name")
+
+    results = [
+        {
+            "id": str(s.id),
+            "name": s.name,
+            "slug": s.slug,
+        }
+        for s in services
+    ]
+
+    return JsonResponse({"services": results}, status=200)
+
+
+
 # ---------- HELPER CAPABILITY: add/edit ----------
 
 @csrf_exempt
